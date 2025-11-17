@@ -22,7 +22,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run Bandit (Python SAST)
-        uses: PyCQA/bandit-action@v1
+        uses: PyCQA/bandit-action@v2
         with:
           args: "-r . -f json -o bandit-report.json"
 
