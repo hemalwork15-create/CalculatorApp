@@ -13,40 +13,40 @@ jobs:
   # SAST: Bandit + Semgrep
   # ===============================
   sast:
-  name: SAST (Bandit + Semgrep)
-  runs-on: ubuntu-latest
+    name: SAST (Bandit + Semgrep)
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-    - name: Install Bandit
-      run: pip install bandit
+      - name: Install Bandit
+        run: pip install bandit
 
-    # ---- Bandit (never fails) ----
-    - name: Run Bandit (Python SAST)
-      run: bandit -r . -f json -o bandit-report.json --exit-zero
+      # ---- Bandit (never fails pipeline) ----
+      - name: Run Bandit (Python SAST)
+        run: bandit -r . -f json -o bandit-report.json --exit-zero
 
-    - name: Upload Bandit Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: bandit-report
-        path: bandit-report.json
+      - name: Upload Bandit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report
+          path: bandit-report.json
 
-    # ---- Semgrep (never fails CI) ----
-    - name: Run Semgrep Scan
-      uses: returntocorp/semgrep-action@v1
-      continue-on-error: true
-      with:
-        config: p/default
+      # ---- Semgrep (never fails pipeline) ----
+      - name: Run Semgrep Scan
+        uses: returntocorp/semgrep-action@v1
+        continue-on-error: true
+        with:
+          config: p/default
 
 
 
