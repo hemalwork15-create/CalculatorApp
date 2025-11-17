@@ -25,28 +25,30 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install project dependencies
         run: pip install -r requirements.txt
 
-      # --- FIXED Bandit Action ---
+      - name: Install Bandit
+        run: pip install bandit
+
       - name: Run Bandit (Python SAST)
         run: bandit -r . -f json -o bandit-report.json
 
-      # Upload Bandit results (optional)
       - name: Upload Bandit Report
         uses: actions/upload-artifact@v4
         with:
           name: bandit-report
           path: bandit-report.json
 
-      # --- FIXED Semgrep Action ---
       - name: Run Semgrep Scan
         uses: returntocorp/semgrep-action@v1
         with:
           config: p/default
 
+
+
   # -----------------------------
-  # Build + DAST (ZAP)
+  # Build + DAST (ZAP scan)
   # -----------------------------
   build-and-dast:
     name: Build image and run DAST (OWASP ZAP)
@@ -65,7 +67,7 @@ jobs:
           docker run -d --name calc-ci -p 8000:5000 calculator:ci
           sleep 5
 
-      - name: Check app is running
+      - name: Check if app is running
         run: |
           for i in {1..10}; do
             if curl -sSf http://localhost:8000/ >/dev/null; then
